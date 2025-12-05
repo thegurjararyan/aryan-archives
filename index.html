@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AryanArchives | @thegurjararyan</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Reenie+Beanie&family=Courier+Prime&display=swap" rel="stylesheet">
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- EXPORT TOOL -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #efe6d5; 
+            --ink-color: #1a1a1a;
+            --accent-color: #a62a2a; 
+            --highlight: #fcf8e3;
+            --term-bg: #111;
+            --term-text: #0f0;
+        }
+
+        /* --- BACKGROUND: THE DOODLE WALLPAPER --- */
+        body {
+            background-color: var(--bg-color);
+            color: var(--ink-color);
+            margin: 0;
+            padding: 0;
+            font-family: 'Playfair Display', serif;
+            background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d0c4b0' stroke-width='2'%3E%3Cpath d='M50,50 Q70,30 90,50 T130,50' /%3E%3Ccircle cx='200' cy='200' r='10' /%3E%3Cpath d='M300,100 L320,120 M320,100 L300,120' /%3E%3Cpath d='M50,300 C50,300 70,280 90,300 S130,300 130,300' stroke-dasharray='5,5'/%3E%3Cpath d='M350,350 L350,330 L370,350 Z' /%3E%3Ctext x='150' y='150' font-family='cursive' font-size='20' opacity='0.5'%3ELove%3C/text%3E%3Cpath d='M10,10 Q30,5 50,10 T90,10' opacity='0.5'/%3E%3Cpath d='M250,50 Q240,40 250,30 Q260,40 250,50' fill='rgba(200,0,0,0.1)' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- LAYOUT WRAPPER --- */
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* --- 1. AUTHOR PROFILE CARD --- */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            padding: 30px;
+            border-radius: 2px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.1);
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+        
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            z-index: -1;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background-image: url('https://imagefa.st/images/2025/12/05/Gemini_Generated_Image_lp55i0lp55i0lp55.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .bio h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
+        .bio p { margin: 5px 0 15px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #666; }
+
+        .social-links { display: flex; gap: 15px; }
+        .social-btn { text-decoration: none; color: var(--ink-color); font-size: 1.2rem; transition: transform 0.2s; }
+        .social-btn:hover { transform: translateY(-3px); color: var(--accent-color); }
+
+        @media (max-width: 600px) {
+            .profile-card { flex-direction: column; text-align: center; }
+        }
+
+        /* --- 2. NAVIGATION TABS --- */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+        }
+
+        .tab-btn {
+            background: #fff;
+            border: 1px solid #1a1a1a;
+            padding: 10px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            box-shadow: 3px 3px 0px rgba(0,0,0,1);
+        }
+
+        .tab-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0px rgba(0,0,0,1); }
+        .tab-btn.active { background: var(--ink-color); color: #fff; box-shadow: none; transform: translate(3px, 3px); }
+        .tab-btn.locked { color: var(--accent-color); border-color: var(--accent-color); }
+        .tab-btn.random { background: var(--highlight); border-color: #e6b333; }
+
+        /* --- 3. MASONRY GRID --- */
+        #archive-grid { column-count: 3; column-gap: 2rem; }
+        @media (max-width: 900px) { #archive-grid { column-count: 2; } }
+        @media (max-width: 600px) { #archive-grid { column-count: 1; } }
+
+        /* --- CARD STYLES --- */
+        .card {
+            break-inside: avoid;
+            margin-bottom: 2rem;
+            background: #fff;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .card:hover { z-index: 100; transform: scale(1.02); }
+
+        /* Actions Bar */
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .action-btn {
+            cursor: pointer;
+            color: #aaa;
+            font-size: 1rem;
+            background: none;
+            border: none;
+            transition: 0.2s;
+        }
+        .action-btn:hover { color: var(--accent-color); }
+        .action-btn.liked { color: var(--accent-color); }
+
+        /* Watermark (Hidden by default, shown on export) */
+        .watermark {
+            display: none;
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            opacity: 0.7;
+            color: var(--ink-color);
+            border-top: 1px solid #ccc;
+            width: 90%;
+            padding-top: 5px;
+        }
+
+        /* DIARY / CONFESSION */
+        .style-paper {
+            background-color: #fffef8;
+            box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+            border-left: 3px solid var(--accent-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* POETRY */
+        .style-poetry {
+            background: #fff; 
+            border: 1px dashed #999;
+            text-align: center;
+            padding: 30px 10px;
+        }
+        .style-poetry h2 {
+            font-family: 'Reenie Beanie', cursive;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            transform: rotate(-2deg);
+            margin: 0;
+        }
+        .style-poetry p { white-space: pre-wrap; font-style: italic; }
+
+        /* BOOK REVIEW */
+        .style-book {
+            background: #f4f4f4;
+            border: 1px solid #333;
+            padding: 0;
+            font-family: 'Courier Prime', monospace;
+        }
+        .book-header {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .book-body { padding: 20px; }
+        .rating { color: var(--accent-color); font-weight: bold; }
+
+        /* TECH */
+        .style-tech {
+            background: #111;
+            color: #0f0;
+            font-family: 'JetBrains Mono', monospace;
+            border: 2px solid #333;
+        }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 18+ LOCKED */
+        .style-locked {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            cursor: not-allowed;
+            overflow: hidden;
+            position: relative;
+        }
+        .blur-content { 
+            filter: blur(8px); 
+            opacity: 0.5; 
+            user-select: none;
+            white-space: pre-wrap;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+        }
+        .lock-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            background: rgba(0,0,0,0.3);
+        }
+        .request-btn {
+            background: var(--accent-color);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        /* Meta Data */
+        .meta {
+            font-size: 0.65rem;
+            color: #888;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .modal-content {
+            text-align: center;
+            border: 1px solid #c0392b;
+            padding: 40px;
+            max-width: 400px;
+            background: #111;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px; right: 15px;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .warning-icon { color: #c0392b; font-size: 3rem; margin-bottom: 20px; }
+        .enter-btn, .contact-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.8rem;
+        }
+        .enter-btn:hover, .contact-btn:hover { background: #c0392b; color: #fff; }
+        
+        .contact-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 50px;
+            padding-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 18+ SAFETY MODAL (TRIGGERED ONLY ON VAULT) -->
+    <div id="safety-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h2>RESTRICTED ARCHIVE</h2>
+            <p>You are entering a section containing mature themes and explicit content.</p>
+            <p style="color: #c0392b; margin-top: 10px;">TRIGGER WARNING: SENSITIVE CONTENT</p>
+            <p>Do you confirm you are 18+?</p>
+            <button class="enter-btn" onclick="enterVault()">YES, I AM 18+</button>
+            <button class="enter-btn" style="background:#333; color:#fff" onclick="closeAllModals()">EXIT</button>
+        </div>
+    </div>
+
+    <!-- CONTACT MODAL (TRIGGERED ON LOCKED ITEM) -->
+    <div id="contact-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAllModals()">&times;</span>
+            <div class="warning-icon"><i class="fa-solid fa-key"></i></div>
+            <h2>REQUEST ACCESS</h2>
+            <p>This content is locked. Contact me to verify identity and get access.</p>
+            <div class="contact-options">
+                <a href="mailto:thegurjararyan@gmail.com?subject=Access%20Request%20for%20Vault" class="contact-btn"><i class="fa-solid fa-envelope"></i> Email Request</a>
+                <a href="https://t.me/thegurjaryan" target="_blank" class="contact-btn"><i class="fa-brands fa-telegram"></i> Message on Telegram</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+
+        <!-- AUTHOR PROFILE -->
+        <div class="profile-card">
+            <div class="avatar"></div>
+            <div class="bio">
+                <h1>AryanArchives</h1>
+                <p>@thegurjararyan | Poet. Coder. Observer.</p>
+                <div class="social-links">
+                    <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-snapchat"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="filter('all')">ALL</button>
+            <button class="tab-btn" onclick="filter('Poetry')">POETRY</button>
+            <button class="tab-btn" onclick="filter('Diary Entry')">DIARIES</button>
+            <button class="tab-btn" onclick="filter('Story')">STORIES</button>
+            <button class="tab-btn" onclick="filter('Confession')">CONFESSIONS</button>
+            <button class="tab-btn" onclick="filter('Book Review')">BOOK REVIEWS</button>
+            <button class="tab-btn" onclick="filter('Tech')">TECH BLOGS</button>
+            <button class="tab-btn locked" onclick="triggerVaultCheck()"><i class="fa-solid fa-lock"></i> VAULT</button>
+            <button class="tab-btn random" onclick="showRandom()" title="Random Memory"><i class="fa-solid fa-dice"></i></button>
+        </div>
+
+        <!-- CONTENT GRID -->
+        <div id="archive-grid"></div>
+
+        <!-- COPYRIGHT -->
+        <div class="footer">
+            &copy; 2025 AryanArchives. All thoughts are personal property. Do not reproduce without permission.
+        </div>
+
+    </div>
+
+<script>
+    // --- DATABASE ---
+    const db = [
+        // --- BOOKS ---
+        { type: "Book Review", date: "2024-03-10", title: "Almanack of Naval Ravikant", rating: "Life Changing", content: "\"Most of modern life is a struggle between our biological evolution and our societal evolution.\" A manual for wealth and happiness that hits harder than a textbook." },
+        
+        // --- TECH ---
+        { type: "Tech", date: "2025-01-01", title: "Portfolio_v2.0", content: "> System initializing...\n> Loading Next.js modules...\n> [ERROR]: Caffeine level low.\n> Coming Soon." },
+
+        // --- LOCKED CONTENT ---
+        { 
+            type: "Locked", 
+            date: "Unknown", 
+            title: "Formals and Chocolates", 
+            content: "Well there's something in formal uniforms that I lust for, Seeing you in them is one of favourite things. Besides, I haven't that in mind until I saw you in sitting there in class waiting for me, I have already got the chocolate you asked for and seeing you in formals, hairs tied tight is delight for my eyes.\n\nI can't focus on class but on your inflated bosom wanted to come out of your shirt, I wanna play with those soft titties of yours so I grabbed you through your slim waist to make you closer and have a better look, you resisted me knowing I ain't going to stop anytime soon.\nThe class is over and I just need a quickie to have a great day but u aren't so simple r you well you can't refuse some chocolates and treats, and you were ready after not so long, cus you know you want it too so bad and not so after we were at the spot we wanted to be.\n\nI locked the door and you start kissing me right away not so fast baby gurl, I stopped you holding you by your throat through my hand. It was pleasure to see you struggling and wanting it so bad... Standing up and pulling your entangled hairs, hard I pinned you against the wall for a final kiss as its time for us go."
+        },
+        { 
+            type: "Locked", 
+            date: "2:18 AM", 
+            title: "Twisted Pain", 
+            content: "And What should I tell you about the beauteous time We had together or the memories that turned nightmares after we parted.\nEven if loving from everything I had isn't enough, maybe what I thought was love is just twisted form of pain and patience can help you gain things, not people.\n\nDon't know if its good or really bad, but here it is...\nAnd we're there out in the cold midnight, But looking at your eyes, and your body all I can see was wild flames of fire.\nHolding your neck in my hand I grabbed you for kiss but I didn't, grunting madly you bit my lips, and I put my hand in your top.\nAs I dabbing my fingers from your mouth to your hair... And in no time you wanna grab something too. Always an impatient bad girl ain't you?\nBut not today. It's already drenching. Pressing and squeezing it hard and your moans defying the utter silence of park."
+        },
+        { 
+            type: "Locked", 
+            date: "Unknown", 
+            title: "Dance to Extremes", 
+            content: "I MEAN YEA I LOVE CURVES AND THOSE BOUNCY THINGS BUT\nWHAT IF SHE GOT RED HAIRS\nBUT ISN'T A BITCH\nSHE KNOWS THE FUCKIN TACTICS\nBUT STILL HUMAN\nWE DO BDSM AT NIGHT\nSTUDY PHILOSOPHY AND CHALLENGE IDEAS BY DAY\nSHE KNOWS FINANCES\nBUT KNOWS IT JUST NOT ABOUT MONEY\nWE LOVE EACH OTHER\nBUT STILL INDEPENDENT\nKNOW WHEN TO SWITCH\nFROM BRAINROTS TO FUCKIN INTELLECTS\nWE DANCE TO EXTREMES\nFROM INTELLIGENCE TO MADNESS"
+        },
+        { 
+            type: "Locked", 
+            date: "Unknown", 
+            title: "Spoil The Child", 
+            content: "oh babe❤️,\nI know its been so long\nand we have been through the dark\nbut now I want to give you the Stars ✨,\n\nI wanna,\nspoil the child inside you\nlisten to the things\nyou never told anyone about,\nmake you feel loved\nlike you always dreamed of.\nI want our souls to collide\nthrough the skin while we hug\nthe slow kisses,\nthe loud moans"
+        },
+        
+        // --- DIARY ENTRIES ---
+        { type: "Diary Entry", date: "03-Nov-2022", title: "The Unfinished Project", content: "It's been more than a week, still I couldn't sleep any better. The memories keeps flashing into my head. There's a lot to do and I have to work on but I don't know how but whenever I am alone they come back everything seems to be deserted.\n\nI am loosing hopes from everywhere, now even if something good is happening I can't enjoy it. It seems like a prison, I am trapped inside me I can't seem to escape it.\n\nSometimes I want to cry but can't. I have read and listened about what happening to me but have never imagined that even the selfish, cold hearted person like me will shed tears for someone." },
+        { type: "Diary Entry", date: "24 Sept 2024", title: "An Abstract Studying", content: "Around two years ago, when she said \"hum dost ban ke nahi reh sakte kya?\" these words went like a knife ruptured into the veins of my heart and I refused of course, but we have came a long way from there and as I am [analyzing] the various cannon events of my life, this is one of the dialogues that iterated in mind a lot...\n\nConcluding the results we found that you can love people and still let them go, as the popular quotes goes by \"Love is not only to get\", also being friend with them is also not a bad thing also just because you don't love something, you don't have to hate or degrade it." },
+        { type: "Diary Entry", date: "6 March 2024", title: "Dear Diary (Monkey Evolution)", content: "मार्च का एक हफ्ता ही बीता है और सर्दियाँ धीरे धीरे जा रही है वहीं गर्मी जल्द से जल्द आने के इंतज़ार में है और इस कारण मुझे जाती हुई सर्दी लग गयी है खैर एक हफ्ते बाद चौथे सेमस्टर के मिड सेम चलने वाले है और मुझे लगता पढ़ाई करने का वक़्त चुका है,\n\nआज का दिन अपने साथ कई नए अनुभवों को लाया था, एक एक्सीडेंटल फिल्म जिसके बारे मैंने रात ही जाना था, थोड़ा सा सफर, एक अच्छी इवनिंग वाक, एक मैक डी मील, आइस क्रीम ट्रीट और काफी बातें हालांकि सब कुछ इतना पॉजिटिव नहीं था पर अब मैं कोशिश करता हु की चीज़ों को थोड़ा ऑष्टिमिस्टिक तरीके से देखा जाए तो बेहतर है खैर,\n\nइस हफ्ते कुछ चीजें हुई जिनसे मुझे अच्छा महसूस नहीं हुआ मैं इस बारे में और जानने के लिए मैं जवाब ढूंढ़ने के लिए एक किताब उठाई उसमे लेखक (नवल रविकांत) अपने नज़रिये से कहते है की\n\"अक्सर हम आइडेंटिटी को अतिरंजित कर देते यानी असल से अधिक मानने लगते हैं, असल में आप बस एक बन्दर जो इवॉल्व हो गए है, यूनिवर्स शायद अनंत है और आप उसमे शायद एक बैक्टीरिया जितने है\"\nजब आप ऐसे सोचते है तो शायद आप चीज़ों को उतना सीरियस या पर्सनली नहीं लेंगे और मुझे ये अच्छा लगा अभी भी काफी समस्याएं और उलझने हैं पर पहुंचेंगे उन तक धीरे,\nगुड नाईट राधे राधे" },
+        { type: "Diary Entry", date: "06/07/2023", title: "Dear Diary (College Life)", content: "मुझे घर आए हुए 2 दिन हो गए है और 2 सेमेस्टर पूरे हो चुके है, लेकिन शायद मैं अभी भी वही लड़का हूं जिसने अभी एडमिशन लिया है और जिसका एक दो चीजों को छोड़कर, इस नए शहर में ज्यादा मन नहीं लगता ।\nहालांकि काफी कुछ हो चुका है 3 रूम चेंज, बहुत नए पुराने दोस्त, सैकड़ों लेक्चर्स, बहुत सारी असाइनमेंट्स, नाइटआउट्स, क्लास बंक, कई चीजों की फर्स्ट ट्राई, कुछ गलतियां, काफी वेट लॉस और बहुत सारी बुद्धा टेंपल ट्रिप्स खैर,\nअभी काफी ज्यादा चीजें बची है पहले मैं डरता था की ये न हो जाए पर अब वे चीजें हो चुकी है जो मैने कभी सोची ही नही थी, पर सब अच्छा है\nपहले जब मैं स्कूल में था तब मैं कॉलेज के बारे में सोचता था की वो कैसा होगा, अब मैं कॉलेज में हूं तो मैं स्कूल के और जॉब के बारे में सोचता हूं ।\nहालांकि मैं बहुत ज्यादा नही बदला और न ही उसे लास्ट एग्जाम दिन पर कुछ कह पाया पर अभी 4 सेमेस्टर बाकी है और वो..\nGood night" },
+        { type: "Diary Entry", date: "23 Feb 2024", title: "Birthday Reflection", content: "चौथे सेमेस्टर को चले हुए करीब एक महीना हो चुका है, पिछले संडे मेरा जन्मदिन था जो काफी अच्छा गुज़रा, काफी सारी शुभकामनाये और प्यार मिला\nऔर फिर आदतन मैं गुज़रे हुए साल के बारे में सोचने कि कितना कुछ बदला और फिर मुझे कुछ पॉजिटिव और कुछ नेगेटिव चीजें याद आयी जो पिछले वर्ष हुई खैर\nचीजें, हालत, विचार सब बदलते रहते हैं और शायद वही बेहतर है पर अभी कल मैंने प्रोजेक्ट मैनेजमेंट की क्लास में सुना की \"चेंज इस ऑलवेज रेसिस्टेड\" और इसका सबसे बेहतर सलूशन है अवेयरनेस यानी जागरूकता जो की शायद आजकल लोगो में सबसे ज्यादा होने की जरूरत है खैर,\nमैं गुड बाये कहने में बहुत अच्छा नहीं हूँ पर मैं सीख रहा हूँ काफी नयी चीजें, और कभी कभी महान लक्ष्य की और बढ़ने लगता हूँ पर फिर मुझे मेरा आलस अपनी और खींच लेता है शायद इसके बाद कुछ और भी लिखूं\nगुड नाईट" },
+        { type: "Diary Entry", date: "26 July 2024", title: "The Spectrum of Feelings", content: "चौथा सेमेस्टर खत्म होकर मैं फाइनल ईयर मैं आ चुका हूँ, मुझे घर आये हुए एक महीना हो चुका है और ये एक स्पेक्ट्रम की तरह है, जिसमे मैंने खुशी, उदासी, बोरियत, आलस, दुःख, काफी ख़ुशी सब महसूस कर कर लिया है खैर\nमेरा पांचवा सेमेस्टर शुरू चुका है और मैं इस ब्रेक में भी प्रोजेक्ट नहीं बना पाया पर मेरी नॉट सो यूज़फुल रिसर्च के अनुसार मैंने जाना\n१. हम सब का प्यार या और भाव प्रकट करने का तरीका काफी अलग या समान हो सकता है जहां कुछ को चाहिए की आप प्यार करने के साथ उससे दिखाएं या जतायें भी, वहीं कुछ लोग इतने अभिव्यंजक या एक्सप्रेसिव नहीं हो पाते और उनके अनुसार सिर्फ प्रेम होना ही काफी है\n२. छोटी छोटी चिंताए या दुःख से आप ऊब जाएंगे बेहतर हैं एक बड़ा दुःख ढूंढा जाए\n३. हल्का बुखार कोई बीमारी नहीं बल्कि इन्फेक्शन या बीमारी से लड़ने का एक इनबिल्ट तरीका है\n४. प्रोकास्टीनेट करते करते मेरे पास काफी ज्यादा काम हो चुका है\nखैर, प्लेसमेंट सीजन आने वाला है और मुझे उसकी तैयारी शुरू करनी है और अभी मुझे लगभग तीन चीज़ों की तलाश है एक नया बेहतर दुःख, एक काफी अच्छी किताब और एक प्रोग्रामिंग लैंग्वेज जिसमे मैं कोड कर सकूं लिखने और भी है पर थोड़ा आलस और कुछ चीज़ों को समझने के लिए थोड़ा और वक़्त\nबाकी जल्द\nगुड नाईट" },
+        { type: "Diary Entry", date: "08 March 2022", title: "Wonderful Tuesday", content: "आज सुबह जरा देरी से शुरू हुई, १२.३० तक एक नेटफ्लिक्स सीरीज जो खत्म की थी |\nजल्दबाज़ी में तैयार होकर बस स्टॉप की और दौड़ा, वहां खड़ा मैं मैथ्स क्लास के बारे में मैं सोच ही रहा था की बस आ गयी बाकी बस चाहे खाली हो पर अगर वे कमीने दोस्त आये हो तो फिर, हर सफर मज़ेदार होता है\n12th के बाद कॉलेज, एक स्टार्टअप आईडिया से लेकर सौरभ की शादी तक हम सब कुछ डिसकस कर चुके थे।\nक्लास टीचर नहीं आये, इसलिए फिजिक्स लैब में गए, प्रैक्टिकल इंडिविजुअल था पर हमने ग्रुप में किया क्योंकि मैथ्स वाले अक्सर मिलजुल रहना जानते है, हम लड़के तो कुछ बना नहीं पाए, इसलिए एक सहपाटिका को लाये, उसने किया हमने देखा, हालाँकि और लड़को लड़कियों से समान चुरा कर सिद्धार्थ ही लाया और मैंने उसकी मदद की, जब एक काम को तीन मैथ्स के लड़के और लड़की लगन से करे और वो न वो, असम्भव है !\nलंच टाइम में अलग अलग प्रजाति के छात्र होते है, आशिक, खाना खाने वाले, दुनिया से अलग अकेले बैठे हुए, ज़िंदगी से परेशान,\nलंच के बाद पेंटिंग का डेमो प्रैक्टिकल था, (जो मुझे बिलकुल पसंद नहीं है) जिसमे पता नहीं क्यों हमे एक चेयर पे रखा जग और गिलास बनाना था, बहुत प्रयत्न के बाद भी मै असफल रहा, इससे अच्छा मुझे मैथ्स के कांसेप्ट लगे, ||\nखैर वैन में समोसा - कोल्ड ड्रिंक पार्टी से मूड में काफी सुधार आया,..\nआज की नज़्म/शायरी:\nतजुर्बे मिलेंगे अधूरी दास्तानों में तुमको मुक़म्मल कहानियाँ कहाँ कुछ सिखा पाती है?\ngood night.." },
+        { type: "Diary Entry", date: "8 Feb 2022", title: "School Diaries (Valentine)", content: "आज काफी दिनों के बाद स्कूल खुला, सबसे मिलने की बहुत ज्यादा उत्सुकता थी हालांकि सब आये नहीं थे |\nस्कूल पहुंचा क्लास पहले ही चल चुकी थी पर अफ़सोस इसमें म्यूट करने और क्लास के बीच में इंस्टाग्राम चलाने का कोई ऑप्शन नहीं था |\nवैसे तो आज प्रोपोज़ डे था पर हम कोआर्डिनेट कंपाउंड्स और मिस्टर लैम्ब के लेसंस ले रहे थे\nशायद अपेक्षाएं टूटने के लिए ही बनी होती है हम ब्रेक टाइम में यही चर्चा कर रहे थे, तो मैंने *** से पूछा की क्या वो कुछ लाया?\nतो उसने मुझे हाजमोला पकड़ा दी !!!\nअफ़सोस बारवी के छात्र भी एक प्रेम त्यौहार न मना सके, एजुकेशन सिस्टम में कुछ तो समस्या होगी खैर,\nइससे मुझे याद आया की कैसे मेरा प्रिये मित्र अक्सर मेरे लिए क्रश को देने के लिए चॉक्लेट लाता था, पर अंत में उसे हम ही खाते थे ।\nमैथ्स क्लास को छोड़कर सब अच्छा ही था,, हालाँकि बिना क्रश के थोड़ा अजीब लगता है, अब तो लगता है जूनियर कक्षा का ही भ्रमण करना पड़ेगा शायद मिले वो, जो कही खोयी हुई है!!\nगुड नाईट" },
+        { type: "Diary Entry", date: "29/06/2022", title: "Holding Hands", content: "जब मैं छोटा था, तो अक्सर रोड क्रॉस करने पर मम्मी मेरा हाथ कसकर पकड़ लेती, और सुरक्षित पहुँचने पर छोड़ती, कई बार पकड़े ही रहती\nहालांकि मुझे वो ज्यादा पसंद नहीं था, मैं खुद वो पार कर सकता था, पर उसमे अच्छी बात ये थी की जरा सा डर लगने पर या असहज होने पर दोबारा एकदम से हाथ पकड़ लेता और फिर किसी डर की इतनी मज़ाल कहाँ जो मुझे छू सके\nइतने सालों बाद अभी कुछ दिन पहले बाजार से आते वक़्त रोड क्रॉस करते समय, उन्होंने एकदम से फिर मेरा हाथ थाम लिया,\nटेक्नोलॉजी और आधुनिकता की अंधी दौड़ में लगी दुनिया, में जहां प्रेमी-प्रेमिका सिर्फ होंठ चूम कर प्रेम साबित करते हों, तब वहां कोई हाथ थामने वाला मिलना तो बहुत मुश्किल है\nमम्मी की इस आदत से मुझे एक बात समझ आयी की जिनसे आप प्रेम करते हैं, उनका हाथ हमेशा थामकर चलना चाइये, खासकर कमज़ोर लम्हों में\nहो सकता है आपको कोई हाथ थमाने वाला न मिला हो, और खुद ही मुश्किलों से द्वन्द किया हो तो\nये आपकी जिम्मेदारी है की आप किसी का हाथ थाम लें, हर कोई एक युद्ध लड़ रहा है, पर साथ में शायद हम किसी को हारने से बचा सकते हैं..." },
+        { type: "Diary Entry", date: "21/02/2022", title: "Monday Diaries", content: "एक वक़्त था जब हम रोज स्कूल जाते थे और कभी कभी छुट्टी होती थी, और अब एक ये है की कभी कभी स्कूल जाते है और वैसे छुट्टी रहती है, खैर !\nसोमवार की सुबह की नींद सबसे सुन्दर, सुकून भरी होती है, जिसे त्याग कर आज स्कूल जाना था |\nलेट उठने की वजह से सब जल्दबाज़ी में किया यहां तक की नहाने के समय ओवर थिंकिंग भी नहीं कर पाया, और बिना ज़ुल्फ़ों को सवारें भागा स्टॉप की तरफ, 15 मिनट स्टॉप पर खड़ा होकर ज़िंदगी के बारे में सोचा, क्या सच में इंजीनियर ही बनना था?\nपहली क्लास, खत्म\nइंग्लिश क्लास में वैभव के साथ फ्यूचर डिसकस कर ही रहा था की टीचर ने देख लिया,\nलंच ब्रेक में हम धूप खाने बैठे तो सहपाठिका ने पूछा की कोई कमिटेड है, या सब सिंगल?\nऔर इस सवाल से लड़को का दर्द छलक उठा !!\nमैं इस बारे में और सोचना चाहता था पर अब मैथ्स क्लास थी, जो आज इतनी बुरी नहीं थी.\nअब घर आकर मैंने अपनी कोरियन सीरीज, खत्म की पर उसमे मेरे प्रिय नायक-नायिका अलग हो चुके थे, पर वो दोनों एक दूसरे के लिए खुश थे !!\nऐसी ही आज की पंक्तियाँ :\nकभी कभी समझ नहीं आता की कोई हमसे पीछे छूट गया है या वो आगे खड़ा हमारा इंतज़ार कर रहा है\nगुड नाईट" },
+        { type: "Diary Entry", date: "15/06/2022", title: "The Beginning of the End", content: "मैं ये दो दिन पहले (13 जून) को लिखना चाहता था बारहवीं के अंतिम पेपर की याद में पर कंप्यूटर का पेपर भी मेरी ex की तरह सारी एक्सपेक्टेशंस पर खरा नहीं उतर पाया, खैर\nएग्जाम ख़त्म हो चुके पर मुझे उनसे निकलने में अभी शायद और वक़्त लगेगा\nकुछ पुराने फैसलों का अभी भी अफ़सोस है और अब करियर को लेकर चुनाव करना है //\nजितना एफर्ट लगा लगा कर टीचर्स ने साइन थीटा कोस थीटा a23 b3/4 सिखाया था उसका थोड़ा भी अगर डिसिशन मेकिंग, मनी मैनेजमेंट और फाइनेंस के बारे में भी सीखा देते तो चीजें अलग हो सकती थी,, खैर\nकनफ्यूज़न का गहरा दौर है, जितने लोग उतने ओपिनियन,, वो यूनिवर्सिटी बेस्ट है, इस कोर्स में बहुत स्कोप है सर, हमारी इंस्टिट्यूट में जीईई- नीट में गारंटीड सक्सेस है ///\nवैसे मैं अपने ज़ख़्मी - अधमरे हॉबीज और पैशन को दोबारा खोज रहा हूँ और कुछ अवशेष भी मिले हैं\nप्रेमिका को छोड़ अभी मैं कोर्सेज और यूनिवर्सिटी की तलाश में ///" },
+        { type: "Diary Entry", date: "Unknown", title: "Freelance and Weddings", content: "डियर डायरी\nकाफी समय से कुछ लिखा नहीं, पर जब अक्सर जब मैं लिख नहीं रहा होता तो चीज़ें होती रहती हैं खैर, इस दौरान काफी चीज़ें हुई,\n1. हमने अपना फ्रीलांस प्रोजेक्ट, एक वेबसाइट बनाई, जिससे हमें अपने ओर क्लाइंट के बारे में काफी चीज़ें पता चली,\n2. अभी हाल ही में मेरे एक मित्र की शादी हुई, और इस पर मैं अभी तक कुछ सॉलिड ओपिनियन फॉर्म नहीं कर पाया क्योंकि शायद उसकी सिचुएशन से वो सही है, पर इतनी जल्दी क्यों है, गाड़ी अच्छी है पर फिर भी अभी क्यों करनी है\nखैर, मुझे लग रहा था कि इन दिनों मेरे साथ सब धीरे धीरे हो रहा है और उससे मैं बोर हो जाता हूं और तो मैं घर आ गया और यहां आकर मेरी मम्मी को लगा कि मैं कुछ खोया सा लग रहा हूं और शायद मुझे प्यार व्यार हो गया है पर मैं उन्हें नहीं समझा पाया कि ये आलस और बोरियत का मिक्सचर है,\nखैर अब मुझे लग रहा की मुझे वापस कॉलेज जाकर अपने प्रोजेक्ट्स और एकेडमिक्स पर काम करना चाहिए पर मैं नवम्बर की इतनी शादियां मिस नहीं करना चाहता इसलिए मैं जाऊंगा पर कुछ ओर शादियां करने के बाद, वैसे कहने को ओर भी है पर उन्हें अभी शब्दों में पिरोना बाकी है, तो जल्द ।।।\nगुड नाइट" },
+        { type: "Diary Entry", date: "Late Sept", title: "The Observer of Emotions", content: "डिअर डायरी\nमुझे पता है अभी सितंबर खत्म नहीं हुआ पर यह महीना अजीब है, मेरे रिसर्च पेपर का प्रोसेस पूरा हो चुका है और शायद अगले हफ्ते से मिड सेमेस्टर एग्जाम होंगे और मैं अब काफी बोर भी हो चुका हूं,\nइंस्टाग्राम, स्नैपचैट, और बहुत सोने के बाद भी चैन न मिलने के कारण मैंने अपनी अधूरी किताब पूरी करने के बारे में सोचा और,\n\nकिताब शुरू करते हुए मुझे ये एक लव स्टोरी जैसी लगी थी पर खत्म करते करते चीज़ें बहुत बदल गई और हां इसका अंत भी दुख ही था, पर कुछ लाइंस जहां मैं थम गया वो थी कि \"कुछ रिश्ते एक खुशबू की तरह होते हैं, पर हम उन्हें बांध कर बासी कर देना चाहते हैं, या छुट्टियों का महत्व तभी तक है जब वो कभी कभी मिलें\" ये बातें बहुत नई नहीं हैं पर, इन्हें पढ़ते हुए में रुक सा गया था, कहानी अधूरी है, और लेखक उसे ऐसी जगह ले जा कर छोड़ देते हैं जहां उसे हमें आगे ले जाना है !\n\nखैर, मुझे लगता है मुझे पढ़ते रहना चाहिए, पर मुझे प्लेसमेंट की तैयारी भी करनी है और भी बहुत सारी चीज़ें हैं पर मैं कर रहा हूं सब धीरे धीरे वैसे,\nकल रात मैं किसी चीज को लेकर काफी परेशान, और काफी देर मंथन करने के बाद मुझे समझ आया की शायद अगर हम किसी दूसरों को समझाने के बजाय खुद को समझे और थोड़ा समझाए तो वो काफी बेहतर होगा, में अब एक और बेहतर किताब की तलाश में हूं\n\nऔर भी जल्द ..\nGood night 🌉" },
+        { type: "Diary Entry", date: "29 Aug 2024", title: "Two Years In", content: "डियर डायरी\nआज ही के दिन 2 साल पहले कॉलेज में मेरा एडमिशन हुआ था और अब मैं थर्ड ईयर में हूं,\n\nखैर ये महीना एक अनस्टेबल शेयर मार्केट जैसा था, कभी मैं काफी खुश, तो कभी काफी ज्यादा उदास, पर इससे जो मैंने समझा की\n\"जब मुझे कुछ अधिक (खुशी, डर, गुस्सा, उत्साह) महसूस हो और अगर मैं उसे एक निष्पक्ष पर्यवेक्षक या आब्जर्वर की तरह देखूं तो असल मे उन चीजों का स्थूल तौर पर कोई खास प्रभाव नहीं पड़ता वो बस एक भाव है जो कुछ समय में फिर सामान्य हो जायेगा पर इसमें समस्या ये है की\n{ बुरे या नेगेटिव इमोशंस के दौरान ये एक काफी अच्छा तरीका है पर जब आप खुश या पॉजिटिव हो तब भी यह उसी तरह काम करेगा और वो काफी अच्छा नहीं है }\"\nखैर,\nप्लेसमेंट सीजन शुरू हो चुका है और फिलहाल मुझे उसकी तैयारी करनी है, हालांकि कॉलेज में आजकल कुछ खास नहीं होता पर, समय कम है और मुझे बहुत सारी चीज़ें पढ़नी है,\nवैसे मैंने एकेडमिक्स छोड़कर एक किताब पढ़ी और उसके अंत में भी था तो बस बहुत सारा दुख :\nपर वह काफी अच्छी थी और मैं दूसरी शुरू कर चुका हूं\n\nऔर मुझे पता है की बदलाव अटल है और जाहिर है सब कुछ हमारे हिसाब से नही बदलता पर मैं कुछ चीजों के बदलने से बस निराश हूं खैर,\nइस महीने मैने कुछ नई चीजें सीखी, मेरा रिसर्च पेपर लगभग पब्लिश होने वाला है, और मेरे पास करने को बहुत सारा काम है जो में आने वाले महीने में करूंगा\nऔर मैं उसे ***\nगुड नाईट" },
+        { type: "Diary Entry", date: "1 Nov 2023", title: "The First Year Reflection", content: "Dear diary,\nमुझे घर आए हुए 2 दिन हो गए है और 2 सेमेस्टर पूरे हो चुके है, लेकिन शायद मैं अभी भी वही लड़का हूं जिसने अभी एडमिशन लिया है और जिसका एक दो चीजों को छोड़कर, इस नए शहर में ज्यादा मन नहीं लगता ।\nहालांकि काफी कुछ हो चुका है 3 रूम चेंज, बहुत नए पुराने दोस्त, सैकड़ों लेक्चर्स, बहुत सारी असाइनमेंट्स, नाइटआउट्स, क्लास बंक, कई चीजों की फर्स्ट ट्राई, कुछ गलतियां, काफी वेट लॉस और बहुत सारी बुद्धा टेंपल ट्रिप्स खैर,\nअभी काफी ज्यादा चीजें बची है पहले मैं डरता था की ये न हो जाए पर अब वे चीजें हो चुकी है जो मैने कभी सोची ही नही थी, पर सब अच्छा है\nपहले जब मैं स्कूल में था तब मैं कॉलेज के बारे में सोचता था की वो कैसा होगा, अब मैं कॉलेज में हूं तो मैं स्कूल के और जॉब के बारे में सोचता हूं ।\nहालांकि मैं बहुत ज्यादा नही बदला और न ही उसे लास्ट एग्जाम दिन पर कुछ कह पाया पर अभी 4 सेमेस्टर बाकी है और वो ____\nGood night" },
+        { type: "Diary Entry", date: "23 Feb 2023", title: "Data Structures & Memories", content: "डिअर डायरी\nसेकंड सेमेस्टर को चले हुए और मुझे घर से आये हुए 11 दिन हो चुके हैं, हालांकि मुझे दोपहर से कॉलेज जाने वाला टाइमटेबल पसंद नही आया पर ठीक है, देर तक सो सकते हैं ।\nपिछले हफ्ते में काफी घटनाएं हुई, बर्थडे उनमें से ही एक था, हालांकि इस बार घर नही मना पाया पर यहां भी काफी अच्छी तरीके से मनाया गया ।\nइस सेमेस्टर हमारे पास डेटा स्ट्रक्चर्स आ चुका है जो मेरी प्रेमिका की यादों से भी खतरनाक है ।\nकाफी चीजें बदल रही हैं, पर मेरी कोडिंग स्किल्स पहले सेमेस्टर वाली ही है, काफी प्रैक्टिस की जरूरत है ।\nमैं अपने सवालों की खोज कर रहा था, तो मैंने पढ़ा की लोग एक दूसरे के ऊपर उगते है किसी पौधे की तरह, जहां कुछ सिर्फ पत्तियों या छोटी टहनियों तक ही पहुंच पाते है वहीं कुछ उसके तने से इस कदर जुड़ जाते है, जिससे उससे अलग करना काफी कठिन हो जाता है, खैर\nअभी बहुत कुछ है सुलझाने को, पढ़ने को, और लिखने को वो फिर कभी अभी सो जाता हूं\nगुड नाईट 🌉\n\nबहुत खो चुका हूं मैं अब खोऊंगा क्या\nकई बार मर चुका हूं मैं अब मरूंगा क्या" },
+
+        // --- STORIES ---
+        { type: "Story", date: "April 10", title: "The Quiet Boy", content: "मैं क्या लिखूं उस लड़के के बारे में..\nवो कभी कभी हँसता बहुत था\nकिसी खूबसूरत खिले हुए फूल की तरह\nमैंने उसे देखा है, बहुत हँसते हुए\nऔर एकदम शांत भी\nपर उसकी गंभीरता में गहराई बहुत थी,\nउसके दोस्त बहुत थे पर\nवो बहुत कम लोगो का दोस्त था\nकिसी के साथ खुलने में वो वक़्त लगाता था\nमार - पिटाई उसे ज्यादा पसंद नहीं थी\nपर तैयारी हमेशा करता रहता\nउँगलियों पे न गिनी जाए उतनी लड़कियों से वो बातें कर चुका था, बातें बहुत अच्छी करता था,\nवो सुन्दर लड़कियों को बहुत निहारता था\nपर उसके सुंदरता के पैमाने कुछ अलग थे वो यूँ तो कभी मुझे छूता नहीं था पर सड़क पार करते हुए, एक दम कसकर हाथ थामकर ले जाता\nफिर जब उसका शायद पहला प्यार खत्म हुआ,\nतो उसने उसे बहुत बदल दिया, उससे निकलने में उसे काफी समय लगा और बेहतर भी बना पर पहले जैसा नहीं रहा\nवो अपनी माँ हर बात बताने वाला लड़का, शायद उसने ये तो कभी उन्हें बताया ही नहीं\nहम दोस्त थे, बातें होती रहती थी, वो रात को कभी कभी दो ढाई बजे मैसेज करके ज़िंदगी के बारे में अजीब सवाल किया करता था??\nफिर एक दिन जब मैंने साहस जुटाया उसे कहने का अपने दिल का हाल...?!" },
+        { type: "Story", date: "20 March 2024", title: "Phone Call with Self", content: "(कुछ वक़्त बीत चुका है छत पर अकेले बैठे हुए, हलकी ठंडी हवा चल रही है, पर मन अभी भी अशांत था कल एग्जाम है और पढ़ भी नहीं पा रहा थी फिर मैं किसी को फ़ोन करने के लिए स्क्रीन स्क्रॉल करने लगा),\n- हैलो, सेल्फ\n(चौंकते हुए) हं, हाँ लाटसाब\n- इस चौंकने को मैं क्या समझें\nयही की मुझे प्यार से बुलाने लगे हो, शायद बिछड़ने का वक़्त करीब आ रहा है, वैसे यूँ अचानक याद करने की कोई ख़ास वजह\n- हाँ, नहीं तुम बिजी तो नहीं हो न\n-हूँ तो, पर मैं अब मैं पढ़कर भी थक चुकी हूँ तो बोलिये\n- यही तो मुश्किल है मैं तो पढ़ भी नहीं पा रहा, मैं सब कुछ पाना चाहता हूँ और, कुछ भी नहीं\nमैं खूब जीना चाहता हूँ पर अंत तो मौत ही है\nऔर वैसे भी जो चीजें मुझे पहले पसंद थी मैं उनसे भी ऊब चुका हूँ\n- हम्म, तो इसमें दिक्कत कहां है, तुम सब कुछ पा लो फिर उसे त्याग दो\nज़िन्दगी को जियो क्योंकि अंत तो मौत है ही\nऔर रही बात पसंद की तो जब तुम पहले जैसे नहीं रहे तो वही कैसे रह सकती है\n- क्या सच में इतना सिंपल है ?\n- हाँ शायद, क्योंकि चीजें अक्सर सरल ही होती है पर लोग नहीं\n- तो अब मैं क्या करूँ ?\n- तुम डरते हो क्योंकि तुम वो नहीं रहे जो पहले थे और नया तुम होना नहीं चाहते, थोड़ी हिम्मत दिखाओ और जाओ ढूंढ़लो खुदको\n- पर अगर वो सही न हुआ तो\n- शायद हो, शायद न हो, पर कम से कम तुम्हे जवाब तो मिल ही जाएगा\n- तुम्हे लगता है मैं कर लूंगा ?\n(कुछ देर चुप रहने के बाद मैंने पूछा)\nशायद, पर मैं चाहती हूँ की तुम करो, क्योंकि मैं नहीं चाहती मेरी इन्वेस्टमेंट खराब हो\nनहीं होगी\nतो अब बतायेंगे कॉलेज - वगैरह के बारे में\nहाँ बताऊंगा, घर जाने के बाद, मेरा मैथ्स एग्जाम है कल, मुझे पढ़ना है\nठीक है, हैप्पी होली\n- हाँ तुम्हे भी, बाए" },
+        { type: "Story", date: "Unknown", title: "The Last Session (Lat-sahab & Sylph)", content: "जिस सवाल को सॉल्व करते हुए मैं बोर्ड्स में अटका था अब उसे ही पढ़ाते हुए अजीब लगता है ऐसा नहीं है मैं अब मैथ्स में अच्छा हो गया हूँ पर जो ५ साल पहले जो मैंने पढ़ा था अब भी वही पढ़ाये जा रहे है खैर अब मैं थक चुका था और मेरा शिष्य भी नींद की झपकियां ले रहा था इसलिए मैंने उसे जाने को कहा, अब मैं अकेला कमरे में बस बैठा हूँ तभी मेरा फ़ोन बजता है और\n\n+ हेलो लाटसाहब !\n- हं, हाँ सिल्फ, कैसी हो ?\n+ मैं ठीक हूँ शायद, आप कैसे हैं ?\n- मैं अच्छा हूँ बस चीज़ें उतनी अच्छी नहीं है तुम बताओ, मूव ऑन कैसा रहा ?\n+ काफी मुश्किल पर मैं वो सब पीछे छोड़ चुकी हूँ, भैया-भाभी को लगता है अब मुझे शादी कर लेनी चाहिए तो बस एक एटेम्पट और फिर आ जाना मेरी शादी का खाना खाने\n- क्या? पर अगर अभी शादी कर लोगी तो सरकारी अफसर बनकर जरूरतमंद बच्चो के लिए NGO खोलने वाली लड़की का क्या होगा\n+ शायद वो जिन्दा रहे, शादी करने से सब ख़त्म नहीं होता\n\n(कुछ देर चुप रहने के बाद)\n+ क्या तुमने ज्वाइन कर लिया ?\n- नहीं मै घर पर ही हूँ और अब अप्लाई करके थक चुका हूँ\n+ (लम्बी सांस लेते हुए)\nहम सब झूठे है लाटसाहब और सबसे बड़ा झूठ हम खुद से बोलते है तुम्हे पता है तुम कितना कुछ कर सकते हो पर वही पुराने आलस, वासनाओं और पुरानी बातों में उलझकर खुद को यह दिलासा देना अपने आप को बदलने से कहीं आसान है, और मैं भी कहीं इससे अलग नहीं हूँ पर मैंने अभी हार नहीं मानी है\n- तुम क्या चाहती हो मैं क्या करूँ ?\n+ मुझे नहीं पता, पर मैं अपनी सभी प्यारी चीज़ें खो रही हूँ पहले ध्रुव, मेरे सपने पर मुझे लगता था तुम कुछ करोगे, प्रेम, आदर्श, ऊंचाइयों की बातें सब झूठ थी\n- हाँ शायद, मेरा अब किसी भी चीज़ में मन नहीं लग रहा सिल्फ़, मैं खो चुका हूँ\n+ कोई और तुम्हे नहीं ढूंढ सकता, तुम्हे ही खुद ही जाना होगा खुद के अंदर\nपर खुद कोई काम करने की शहज़ादों को आदत कहाँ\nमैं तुमसे गुस्सा नहीं हूँ लाटसाहब बस निराश हूँ,\n- वो सब चीज़ें जिनके होने के ख्याल से ही मैं डरता था वो या तो हो चुकी है या हो रही है, मैं थक गया हूँ सिल्फ\nमेरा प्रेम बस एक भ्रम था और कविता बस कल्पनाएं, ऐसा लगता जो मैं जानता था सब गलत था\n+ भ्रम तो एक दिन टूटना ही था, कल्पनाएं सच भी होती है और सही चीज़ें सिखने के लिए अभी देर नहीं हुई है\nहो सकता है चीज़ें गलत हुई हो आगे भी होंगी पर तुमने उन सब लोगो को धोखा दिया है जिन्होंने तुमसे उमीदें है सबसे ज्यादा\nखुद को यह जानते हुए कि तुम क्या हो सकते थे, तुमने बस दुःख, दर्द और लाचारी का मुखौटा पहनना सही समझा\n\n(अब दोनों शांत हो चुके है, कुछ देर चुप रहने के बाद)\n- सिल्फ़।।\n+ (सिसकी लेते हुए) ये हमारा आखिरी सेशन है लाटसाहब, अब मेरे पास कहने को कुछ नहीं बचा शायद तुम बदलो मम्मी-पापा, वो बच्चे जिन्हे तुम पढ़ाते हो या फिर मेरे लिए जो अब भी सोचती हूँ कि तुम कुछ कर सकते हो।\nक्योंकि अगर तुम भी हार गए,\nतो शायद मैं फिर कभी किसी में यकीन नहीं कर पाऊँगी।\n\n(फोन के उस पार कुछ नहीं, बस साँसों की आवाज़ है।)\nफिर कॉल कट जाती है。" },
+        { type: "Story", date: "October (Est)", title: "The Cold Wind Call (Sylph & Dhruv)", content: "कल एग्जाम है और मैं थोड़ा पढ़ चुका था, रात को बाहर बैठकर मैं अक्टूबर की ठंडी हवा लेते हुए, मैं फोन स्क्रॉल कर रहा था की अचानक एक ठंडे हवा के झोंके की तरह मुझे एक फोन आया और,\n\n+ हेलो मिस्टर बिजी प्राइम मिनिस्टर,\n• सिल्फ, इस ठंडी हवा को आते देख मुझे लगा ही था की तुम हो, कैसी हो ?\n+ हां ठीक हूं, ऐसी बातें बनाने से अच्छा एक फोन कर लेते तो शायद ज्यादा अच्छा रहता\n• मैं हर बार फोन पर अपनी प्रॉब्लम्स ही बताता हूं, और तुम्हारे पास भी काम हैं, तो कैसा चल रहा है सब ?\n+ सब अच्छा तो नही है, मेरा और ध्रुव का ब्रेकअप हो गया है\n\n(कुछ देर बाद)\n+ क्या हुआ, दुखी मैं हूं और चुप तुम हो गए, कुछ बोलते क्यों नही\n• यार, मैं कभी नही चाहता था की तेरे साथ ऐसा हो, और तू और ध्रुव तो एक साथ परफेक्ट थे, कब हुआ ये और तूने बताया क्यों नही ?\n+ करीब दो हफ्ते हो चुके है, और तू भी रिसर्च पेपर और प्रैक्टिकल वगैरह में बिजी था बस इसलिए,\n• हां पर एक मैसेज ही कर देती,\n+ मुझे कुछ समझ ही नही आ रहा था, दो तीन दिन ऐसे खोई रहने के बाद मैं बहुत रोई, और उससे काफी अच्छा लगा जैसे अंदर से कुछ खाली हो गया हो, और अब मैं ठीक हूं तो फिर सोचा तुझे बताऊं,,\n• पर इतनी जल्दी नॉर्मल और ये सब कैसे\n+ नही सब कुछ भी ठीक नहीं है, वे बातें, वे सवाल अब भी मेरे मन में घूमते रहते है, पर मुझे कोई रिग्रेट नही है,\nपता है मैं पिछले वीकेंड घर गई थी और दो दिन मैं बिल्कुल नॉर्मल थी पर आते वक्त, मैं पापा से गले लगते ही रोने लगी और वे बस मुझे चुप कराते हुए बोले की, बेटा, मुश्किलें तो आती जाती रहेंगी, पर हम से इतना दूर मत होना, की अपने दिल की बात न कह सके और उन्होंने थोड़े और पैसे देकर भी प्यार जताया,\n• पर ये कैसा ब्रेकअप हो रहा है, जहां पैसे भी मिल रहा है और प्यार भी क्या मतलब अमीरों के ब्रेकअप भी हमारे जैसे नही होते !!\n+ हां हां, बस मुझे लगता है, की बस ये एहसास की कोई आपके साथ है, या आपको समझता है, कितना खूबसूरत है, और तू मेरी उन्ही चुनिंदा लोगों की पोस्ट पर एक इंटर्न है,,\n• थैंक यू मैडम, एक सेकंड इंटर्न ,,,\n+ हां क्योंकि प्लेसमेंट नही हुआ न अभी तुम्हारा !!" },
+        { type: "Story", date: "Unknown", title: "School Crush Interaction", content: "तो आज वो पल था जो सदियों बाद घटित होता है, क्रश के साथ Interaction\n\"सुबह सुबह सब कुछ जल्दी जल्दी करके स्कूल पहुंचे पहले २ पीरियड शांति से गुज़र गए, दूसरा पीरियड खतम हुआ तो साथ बैठे एक अजीब प्राणी को लगा की बहुत समय हो गया एक ही जगह रहते रहते, तो चलो कहीं घूम कर आते है\nतो चल दिए टॉयलेट, वहां भी काफी पारिवारिक माहौल था, एक बार में मन नहीं भरा तो दो बार गए,\nफिर क्लास में आकर याद आया जो करने गए थे, वो करके ही नहीं आये, तो अंतत थर्ड एटेम्पट में कार्य पूर्ण हुआ.\nअब फिजिक्स क्लास चल रही है, हालाकिं मैं टीचर के विचारों से अनिभिज्ञ हूँ, पर बैठे है इधर उधर देखते हुए, अब दोबारा इस प्राणी के मन में कुछ आया और अपने पेन की कैप निचे गिरा दी, मुझसे कहा उठाने को पर, अब मेरा मन बदल चुका है मैंने उसमे carrom की गोटी की तरह एक काफी अच्छा शॉट खेला, अब वो कसे पीछे रहता उसने भी मेरी कैप से शॉट मारा और वो पहली सीट के नीचे जा गिरी, अब घंटी बज चुकी है वो जल्दी से अपनी कैप उठाकर बायो क्लास में जा चुका है\nपर मेरी कैप\nक्रश के सीट नीचे अपनी जगह बना चुकी है\nलगभग १५ मिनट गुज़र चुके है, मैथ्स वाली आधी एक्सरसाइज करा चुकी ह और मै अपनी कैप और उसे वापस मांगने के बारे में सोच रहा हूँ,\nअब पीरियड खत्म होने में ५ मिनट बची है,\n\"सारा कॉन्फिडेंस इकठ्ठा करके मैंने उसे आवाज लगाई, उसने हलके से मेरी और देखा मैंने कैप की और इशारा किया तो उसने उठायी और देने के लिए मेरी और की, जो पकड़ते हुए मेरे हाथों से छूट गयी और दोबारा नीचे गिर पड़ी\nवो थोड़ा हंसी और में उसे उठा कर तेज़ी से अपनी सीट की और दौड़ा\" |" },
+
+        // --- CONFESSIONS (Non-Explicit) ---
+        { type: "Confession", date: "Nov 2022", title: "Sucked Up Happiness", content: "I don't know what it is but\nIt has sucked up my excitement and happiness\nI am tired\nI am exhausted\nEven after sleeping for so long\nI wake up in middle of night restless\nIt feel like burning inside slow and steady\nI am drifted away from everyone\nThere's no one to talk to\n\nIt's just f*ck**g hurts so much." },
+        { type: "Confession", date: "19/10/2021", title: "Dear Crush", content: "Dear crush,\nI don't know what I actually saw in you, but the first time I saw you is the moment I fell for you, although we never had a conversation really, but the things that I have done for you were hilarious.\nthe rumors about your breakups and patch ups have greatly influenced my emotions.\nEven after so much gossip and rumours about you, you still managed to be my crush\nAlthough, I never proposed you, (have tried but) but the feelings were always there.\nmaybe I will never tell you, and you will never know but this is what \"CRUSH\" is!?" },
+        { type: "Confession", date: "Unknown", title: "The Fear of Ruin", content: "I was afraid that...\nSome day I might lose her and what will become of me without her,\nI might fail if I try to learn or do a new thing,\nsomeday my parents will not be there for me,\nthe things I ruined may never be healed,\nbut is it?" },
+
+        // --- POETRY ---
+        { type: "Poetry", date: "Saturday 9:50 PM", title: "Autumn Rendezvous", content: "I want to meet you, someday\nUnder a beautiful, old tree in autumn\nBeyond the prohibitions of world\nwhere we will talk for hours\nFreely just about ourselves\nWe then will listen to\nthe sounds of rustling of dried leaves, tweets of the sparrows\nand nature in silence\nHolding each other tight\nWatching drowning of sun\nwe'll be there, till its dark." },
+        { type: "Poetry", date: "10:10", title: "Unkissed", content: "And then they asked?\nhaven't I have ever kissed the pretty pink lips of her\nor why in the swift paced world\nHave I been shielding my chastity\nBut for me\nIt's never about being right or wrong\nI haven't found the person yet\nwhose soul I can touch\nwhere bodies will be just an passage\nand not the end!\nIt's not how they want you to\nit's how you let it." },
+        { type: "Poetry", date: "39w", title: "Sard Hawayein", content: "ये सर्द हवाएँ इस शहर की\nपिघलने ही नहीं दे रही किसी दिल को\nटूट रहें है जम कर\nतो कुछ टूट कर जम चुके है\nमर रहा हूँ मैं रोज क़तरा क़तरा\nपर ये दर्द का अहसास मुझे मरने भी नहीं देता\nबन चुके है ये लोग यहां लाशें बर्फ की\nपर ये धीमी आग मेरे दिल की बुझती ही नहीं\nये इतनी लम्बी अँधेरी रात\nपर कहाँ होती है अब नींदों से मुलाक़ात\nबातें कहने को है बहुत पर\nभरोसा अब किसी कान पर नहीं है\nचीखती खामोशियाँ रह जाती है अनसुनी\nबड़े शहरों की अंधी कामनाओ के शोर में\nमैं सोना चाहता हूँ किसी रोज\nएक लम्बी, गहरी नींद जब किसी सवेरे की कोई फ़िक्र ही न हो" },
+        { type: "Poetry", date: "12 Jan", title: "Unexpected Surprise", content: "I don't believe in Angels but\nYou were the unexpected surprise\nI was most deprived of\nYou made me believe in uncertainty\nYou were the one who\nHealed my broken self beliefs,\nHeld my hand when I am down,\nMade me believe in people again.\nI don't know how you have done it\nAnd why have you accepted\nThe scars and bruises of me.\nYour innocence and honesty\nIs so beautiful, sometimes I think\nam not worthy of you.." },
+        { type: "Poetry", date: "Oct 2022", title: "Ink and Blood", content: "Oh how do I write you asked,\nIt's never the ink that wrote,\nIt's the blood from the veins of my heart, that I carved out myself,\nand yes it hurt like hell\nbut ah feeling of continuous fucking pain is what I want now\nthe numbness in the body\ntears from the eyes\nand infinite loop of flashbacks in my head\nyea that's how it's now\nand when any time any day\nsuddenly I can't breathe, my eyes got wet and\nit made me remember all the memories I had had with her\nand there's nothing I can't do guess rather than just wait to be normal\nsometimes I overcome, sometimes I can't,\nbut I ain't givin up." },
+        { type: "Poetry", date: "Thursday", title: "Drowned", content: "Your eyes are my favourite oceans to be drowned in\nFor all I care\nYou were the first thing\nThat I was scared to lose\nBut It was like a rose that\nI plucked and wanna save it\nBy doing everything I can\nI have tried to hate you\nOnly to realize it made me\nFeel worst about myself\nAnd It hurts me that\nWe parted\nBut I am happy\nThat we met\nAnd it was beautiful\nWhile lasted\nWe'll meet someday.." },
+        { type: "Poetry", date: "Unknown", title: "Science Student Poem", content: "Maybe,\nour bond is too perfect to be stable,\nthe distance b/w us is greater than the\nforce of attraction\nso it got differentiated\nthe poetry of our love never got compiled\nand the color of your character in my painting faded away.." },
+        { type: "Poetry", date: "Unknown", title: "Resurrection", content: "FOR ME\nyour touch was never casual\nyour presence was always special\nand I crave it like devotee for its idol.\nI have archived the memories\nin which we are together\ndeep inside my heart\nI want our souls to collide\nthrough the bodies\nI want to hold your hand\non the night of resurrection." },
+        { type: "Poetry", date: "Unknown", title: "Weird Poetry", content: "And I found myself on the dusty,\nrough, wild road\nthere is no going back\nand i also can't see something forward\nmy toes are hurt, my head is crumbling\nI fall,\nBright, hottest sunlight falling on me\nI can't look up, crying, no one to help\nI stand, releasing the so called essentials\nmoved foreword, getting hurt again\nhungry, anxious, weak\nI kept walking\nAnd I realized there is no destination,\nits just the paths we came across and\nmove forward..!" },
+        { type: "Poetry", date: "Unknown", title: "Chemistry Revisions", content: "when you are revising chemistry\nbut you are a poet\nकरता नहीं था रिएक्ट किसी से में\nपर तुम एक्सेप्शन थी मेरी\nअफ़सोस मिक्सचर हमारा स्टेबल न रह पाया\nऔर रिएक्शन हमारा जीरो आर्डर ही रह गया\nआधा ही रह गया मेरा डी ऑर्बिटल\nअडसोर्शन हमारा कभी हो न पाया\nइलेक्ट्रिक पोटेंशियल हमारा नेगेटिव रह गया\nऔर कपलिंग रिएक्शन कभी हो ही न सकी.." },
+        { type: "Poetry", date: "Unknown", title: "Happiness Search", content: "वो खुशी ढूंढता फिर रहा है\nवो खुशी ढूंढ रहा है उस नये फोन में\nवो खुशी ढूंढ रहा है उस नयी बाईक में ।\nफिर एक दिन पा लेने के बाद\nउस नए फोन को ओर, उस महंगी बाईक को\nअब वे उसे समान्य लगने लगे ।।\nअब वो खुशी ढूंढ रहा है apple के फोन मे\nओर एक चमचमाती कार में..." },
+        { type: "Poetry", date: "Unknown", title: "Machines and Humans", content: "सिर्फ मशीने बदली है\nइंसान वही है\nबस इमारतें बड़ी हुई है\nसोच वही है\nकाश मंत्री सिर्फ अफ़सोस न जताते\nकाश उसे जलाने से पहले\nउन हैवानो को जलाया जाता\nकाश ...." },
+        { type: "Poetry", date: "Unknown", title: "The Unsaid", content: "वो लड़के/लडकियां जो कभी अपने प्रेम का इजहार न कर सके, जिन्होंने दबा दिया अपने प्रेम को दिल के किसी गहरे कोने में, जो जान न सके अपने प्रेमी/प्रेमिकाओं की भावनाएं उनके प्रति\nपर किसी रोज जब वे होते कमज़ोर तो दोबारा लहरों के समान उठते है सवाल की, शायद बता दिया होता एक बार दिल का हाल, हाँ शायद मना कर देता वो पर कहना था एक बार !?\n\nवो लड़के/लडकियां जो न ले पाए अपने जीवन का निर्णय, ढ़ोने लगे अपने माँ-बाप या समाज के सपनें, जो बन सकते थे एक बेहतर कवि, गायक, क्रिकेटर पर वो बने इंजीनियर व डॉक्टर, शायद वे बन न पाते वो पर करके देखना था न एक बार ?!" },
+        { type: "Poetry", date: "Unknown", title: "Ye Barahvi Ke Ladke", content: "ये बारहवीं के अधपके लड़के,\nउठाते है माँ-बाप की उम्मीदों का भार कंधो पर\nऔर जिम्मेदारियां भी, बोर्ड एग्जामस का स्ट्रेस\nअधूरी असाइनमेंट की टेंशन,\nइतना दर्द दे ना पाए जो टीचर इतने सालों में\nवो उस लड़की दे ने दिया चंद दिनों में ही\nलगता था जो स्कूल जेल इन्हे तब\nअब किसी जन्नत से कम नहीं लगता\nकुछ आते आते थे सिर्फ पढ़ने जहां\nकुछ ज़िंदगी यही जीते थे\nकुछ खूबसूरत चेहरे ही थे\nकितने लड़कों की ९०% अटेंडेंस का राज़\nजैसे ही आ रहा नज़दीक अंत इस सफर का\nइसका रोमांच उतना ही बढ़ता जा रहा है\nऔर लड़कियां तो बिछड़ने पर रो देंगी\nपर वे लड़के तो रो भी नहीं सकते\nये बारहवी के लड़के.." },
+        { type: "Poetry", date: "Unknown", title: "Worthy", content: "The world has vivid up after I saw you\nIts more colorful than it used to be\n\nThe first time I hold your hand\nIt was warm and soft\nAnd I wish the world should be like this\n\nThe first time you put your head on my shoulder\nI felt worthy of something\n\nIt is strange but a beautiful experience\nI don't know how but\nTime flies when you sit alongside\n\nI don't want it to end\nIt is something to live for.." },
+        { type: "Poetry", date: "Unknown", title: "Corpse That Breathes", content: "AND\nOne day I looked upon my life\nand it was nothing but\na pile of failures and fears.\n\nI were the corpse that breathes\nI wish the time we spent together\ncould be my entire life\n\nAfter you left\nMy eyes bled\nMy soul cried\nMy heart shivered\n\nThe move on seems impossible\nI tried so hard\nBut all my efforts\nwent into vain\nAfter I saw you again" },
+        { type: "Poetry", date: "Unknown", title: "The Umbrella Paradox", content: "I searched love\nIn her eyes for years\n\nAfter giving everything I can\nI thought it'll be enough but,\n\nI forget that\nPeople forget about umbrella\nAfter the rain stopped\n\nAnd one day after the last call\nIt feels like death\nThere were lots of things to say\nLots of emotion to express\n\nBut everything was silent\nIts like becoming deaf\nMy heart was screeching\nMy tongue was silent\nMy brain was chaos\nMy body was a c0rpse\n\nIt felt like hell\nUntil.." },
+        { type: "Poetry", date: "Unknown", title: "Depths", content: "Surfaces don't excite me\nDepths do,\n\nYou found me\nWhen I was drowned in lust\nAnd I don't know\nBut talking to you felt real\n\nIt was not clever, planned or fake\nIt was human\n\nI don't know if we will\nBut I really hope we meet someday\nTalking and doing things we talked about\n\nAnd now when I don't believe in it but\nYou are really a thing to be loved 💝" },
+        { type: "Poetry", date: "Unknown", title: "Glacier Heart", content: "one day when I was thinking\nwhat would happen\nIf we met again..\n\nthe Glacier of my heart\nwould melt away with\na touch of your hand,\nThe dam I have put on my tears duct\nwill be flooded\nmy hairs craves your touch\nlike barren lands want the rains\n\nwhat will we talk about ?\nwill we" },
+        { type: "Poetry", date: "Unknown", title: "Addicted to Dark", content: "Scared from the dark\nI love it in the darks now\nThe deep & darkest night\nSeem so elegant and calm\n\nNo more I am afraid of\nThe worst nightmare i came across\n\nAfter becoming parted from you\nI get to know about the\nlittleness of me\n\nAddicted of dark\nYou put me through the sunlight\nwhere everything seem so bright" }
+    ];
+
+    // --- LOGIC ---
+    const grid = document.getElementById('archive-grid');
+    const safetyModal = document.getElementById('safety-modal');
+    const contactModal = document.getElementById('contact-modal');
+
+    // 1. Sort Function (Newest First)
+    function sortData(data) {
+        return data.sort((a, b) => {
+            if (a.date === 'Unknown') return 1;
+            if (b.date === 'Unknown') return -1;
+            return new Date(b.date) - new Date(a.date);
+        });
+    }
+
+    // 2. Render Function
+    function render(filterType) {
+        grid.innerHTML = '';
+        const sortedDB = sortData(db);
+
+        sortedDB.forEach((item, index) => {
+            // Filter Logic
+            if (filterType !== 'all' && item.type !== filterType) return;
+            // Hide Locked content from ALL view
+            if (filterType === 'all' && item.type === 'Locked') return;
+
+            const card = document.createElement('div');
+            
+            // Assign CSS Class
+            let cssClass = 'card ';
+            if (item.type === 'Poetry') cssClass += 'style-poetry';
+            else if (item.type === 'Book Review') cssClass += 'style-book';
+            else if (item.type === 'Tech') cssClass += 'style-tech';
+            else if (item.type === 'Locked') cssClass += 'style-locked';
+            else cssClass += 'style-paper';
+            
+            card.className = cssClass;
+            card.id = `card-${index}`; 
+
+            // Content Formatting
+            let htmlContent = '';
+            const liked = localStorage.getItem(`liked-${index}`) === 'true' ? 'liked' : '';
+
+            // Layouts
+            if (item.type === 'Book Review') {
+                htmlContent = `
+                    <div class="book-header">LIBRARY ARCHIVE</div>
+                    <div class="book-body">
+                        <h3>${item.title}</h3>
+                        <p class="rating">VERDICT: ${item.rating}</p>
+                        <p>${item.content}</p>
+                        <div class="meta">${item.date}</div>
+                    </div>
+                `;
+            } else if (item.type === 'Locked') {
+                // RENDER FULL CONTENT BUT BLURRED
+                htmlContent = `
+                    <div class="blur-content">${item.content.replace(/\n/g, '<br>')}</div>
+                    <div class="lock-overlay">
+                        <i class="fa-solid fa-lock fa-2x"></i>
+                        <h3 style="color: #fff; margin-top:10px;">${item.title}</h3>
+                        <button class="request-btn" onclick="showContactOptions()">REQUEST ACCESS</button>
+                    </div>
+                `;
+            } else {
+                htmlContent = `
+                    <div class="meta">
+                        <span>${item.type}</span>
+                        <span>${item.date}</span>
+                    </div>
+                    ${item.title ? `<h2>${item.title}</h2>` : ''}
+                    <p>${item.content.replace(/\n/g, '<br>')}</p>
+                `;
+            }
+
+            // Add Actions (Like & Share) to non-locked cards
+            if (item.type !== 'Locked' && item.type !== 'Tech') {
+                htmlContent += `
+                    <div class="actions">
+                        <button class="action-btn ${liked}" onclick="toggleLike(this, ${index})"><i class="fa-solid fa-heart"></i></button>
+                        <button class="action-btn" onclick="shareCard('card-${index}')"><i class="fa-solid fa-camera"></i></button>
+                    </div>
+                    <div class="watermark">archives of aryan | @thegurjararyan</div>
+                `;
+            }
+
+            card.innerHTML = htmlContent;
+            grid.appendChild(card);
+        });
+    }
+
+    // 3. Filter Logic
+    function filter(type) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        // Find button with specific onclick text to activate
+        const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.includes(type.toUpperCase()));
+        if(targetBtn) targetBtn.classList.add('active');
+        
+        render(type);
+    }
+
+    // 4. Trigger Vault Warning
+    function triggerVaultCheck() {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.tab-btn.locked').classList.add('active');
+        
+        // Show Warning Modal
+        safetyModal.style.display = 'flex';
+    }
+
+    // 5. Enter Vault (After Confirmation)
+    function enterVault() {
+        safetyModal.style.display = 'none';
+        render('Locked');
+    }
+
+    // 6. Show Contact Options (For Locked Cards)
+    function showContactOptions() {
+        contactModal.style.display = 'flex';
+    }
+
+    // 7. Close All Modals
+    function closeAllModals() {
+        safetyModal.style.display = 'none';
+        contactModal.style.display = 'none';
+    }
+
+    // 8. Random Memory Feature
+    function showRandom() {
+        const available = db.filter(item => item.type !== 'Locked' && item.type !== 'Tech');
+        const randomItem = available[Math.floor(Math.random() * available.length)];
+        
+        grid.innerHTML = ''; // Clear grid
+        // Render single card
+        const card = document.createElement('div');
+        let cssClass = 'card ';
+        if (randomItem.type === 'Poetry') cssClass += 'style-poetry';
+        else if (randomItem.type === 'Book Review') cssClass += 'style-book';
+        else cssClass += 'style-paper';
+        
+        card.className = cssClass;
+        card.innerHTML = `
+            <div class="meta"><span>${randomItem.type}</span><span>${randomItem.date}</span></div>
+            ${randomItem.title ? `<h2>${randomItem.title}</h2>` : ''}
+            <p>${randomItem.content.replace(/\n/g, '<br>')}</p>
+            <div class="actions">
+                <button class="action-btn" onclick="location.reload()">Back to All</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    }
+
+    // 9. Like Feature
+    function toggleLike(btn, index) {
+        if (btn.classList.contains('liked')) {
+            btn.classList.remove('liked');
+            localStorage.setItem(`liked-${index}`, 'false');
+        } else {
+            btn.classList.add('liked');
+            localStorage.setItem(`liked-${index}`, 'true');
+        }
+    }
+
+    // 10. Share / Export as Image
+    function shareCard(cardId) {
+        const cardElement = document.getElementById(cardId);
+        const watermark = cardElement.querySelector('.watermark');
+        const actions = cardElement.querySelector('.actions');
+
+        // Show watermark, hide buttons for screenshot
+        if(watermark) watermark.style.display = 'block';
+        if(actions) actions.style.display = 'none';
+
+        html2canvas(cardElement, {
+            backgroundColor: null, 
+            scale: 2 // High Res
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `AryanArchives_Memory.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+
+            // Reset UI
+            if(watermark) watermark.style.display = 'none';
+            if(actions) actions.style.display = 'flex';
+        });
+    }
+
+    // Initial Render
+    render('all');
+
+</script>
+</body>
+</html>
