@@ -24,7 +24,6 @@
             --term-text: #0f0;
         }
 
-        /* --- BACKGROUND: THE DOODLE WALLPAPER --- */
         body {
             background-color: var(--bg-color);
             color: var(--ink-color);
@@ -36,7 +35,6 @@
             min-height: 100vh;
         }
 
-        /* --- LAYOUT WRAPPER --- */
         .wrapper {
             max-width: 1200px;
             margin: 0 auto;
@@ -44,7 +42,7 @@
             position: relative;
         }
 
-        /* --- 1. AUTHOR PROFILE CARD --- */
+        /* --- PROFILE CARD --- */
         .profile-card {
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid #ccc;
@@ -94,7 +92,7 @@
             .profile-card { flex-direction: column; text-align: center; }
         }
 
-        /* --- 2. NAVIGATION TABS --- */
+        /* --- NAVIGATION --- */
         .nav-tabs {
             display: flex;
             justify-content: center;
@@ -122,12 +120,11 @@
         .tab-btn.locked { color: var(--accent-color); border-color: var(--accent-color); }
         .tab-btn.random { background: var(--highlight); border-color: #e6b333; }
 
-        /* --- 3. MASONRY GRID --- */
+        /* --- GRID & CARDS --- */
         #archive-grid { column-count: 3; column-gap: 2rem; }
         @media (max-width: 900px) { #archive-grid { column-count: 2; } }
         @media (max-width: 600px) { #archive-grid { column-count: 1; } }
 
-        /* --- CARD STYLES --- */
         .card {
             break-inside: avoid;
             margin-bottom: 2rem;
@@ -136,10 +133,8 @@
             transition: all 0.3s ease;
             position: relative;
         }
-        
         .card:hover { z-index: 100; transform: scale(1.02); }
 
-        /* Actions Bar */
         .actions {
             display: flex;
             justify-content: flex-end;
@@ -159,7 +154,6 @@
         .action-btn:hover { color: var(--accent-color); }
         .action-btn.liked { color: var(--accent-color); }
 
-        /* Watermark (Hidden by default, shown on export) */
         .watermark {
             display: none;
             position: absolute;
@@ -174,7 +168,7 @@
             padding-top: 5px;
         }
 
-        /* DIARY / CONFESSION */
+        /* TYPE STYLES */
         .style-paper {
             background-color: #fffef8;
             box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
@@ -183,7 +177,6 @@
             font-size: 0.85rem;
         }
 
-        /* POETRY */
         .style-poetry {
             background: #fff; 
             border: 1px dashed #999;
@@ -199,7 +192,6 @@
         }
         .style-poetry p { white-space: pre-wrap; font-style: italic; }
 
-        /* BOOK REVIEW */
         .style-book {
             background: #f4f4f4;
             border: 1px solid #333;
@@ -217,7 +209,6 @@
         .book-body { padding: 20px; }
         .rating { color: var(--accent-color); font-weight: bold; }
 
-        /* TECH */
         .style-tech {
             background: #111;
             color: #0f0;
@@ -227,7 +218,7 @@
         .blink { animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* 18+ LOCKED */
+        /* LOCKED CONTENT STYLES */
         .style-locked {
             background: #000;
             color: #fff;
@@ -236,6 +227,14 @@
             overflow: hidden;
             position: relative;
         }
+        .style-unlocked {
+            background: #1a1a1a;
+            color: #ddd;
+            font-family: 'Courier Prime', monospace;
+            border: 1px solid var(--accent-color);
+        }
+        .style-unlocked .meta { color: #555; border-color: #333; }
+        
         .blur-content { 
             filter: blur(8px); 
             opacity: 0.5; 
@@ -265,7 +264,6 @@
             font-size: 0.7rem;
         }
 
-        /* Meta Data */
         .meta {
             font-size: 0.65rem;
             color: #888;
@@ -324,9 +322,24 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            margin-bottom: 20px;
         }
 
-        /* FOOTER */
+        .passcode-section {
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+        .pass-input {
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px;
+            font-family: monospace;
+            width: 60%;
+            text-align: center;
+        }
+
         .footer {
             text-align: center;
             font-family: 'JetBrains Mono', monospace;
@@ -353,16 +366,23 @@
         </div>
     </div>
 
-    <!-- CONTACT MODAL (TRIGGERED ON LOCKED ITEM) -->
+    <!-- CONTACT / UNLOCK MODAL -->
     <div id="contact-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="closeAllModals()">&times;</span>
             <div class="warning-icon"><i class="fa-solid fa-key"></i></div>
             <h2>REQUEST ACCESS</h2>
-            <p>This content is locked. Contact me to verify identity and get access.</p>
+            <p>This content is locked. Contact me to get the access code.</p>
+            
             <div class="contact-options">
                 <a href="mailto:thegurjararyan@gmail.com?subject=Access%20Request%20for%20Vault" class="contact-btn"><i class="fa-solid fa-envelope"></i> Email Request</a>
                 <a href="https://t.me/thegurjaryan" target="_blank" class="contact-btn"><i class="fa-brands fa-telegram"></i> Message on Telegram</a>
+            </div>
+
+            <div class="passcode-section">
+                <p>Have the code?</p>
+                <input type="password" id="passcode-input" class="pass-input" placeholder="ENTER CODE">
+                <button class="enter-btn" onclick="unlockVault()">UNLOCK</button>
             </div>
         </div>
     </div>
@@ -411,10 +431,7 @@
 <script>
     // --- DATABASE ---
     const db = [
-        // --- BOOKS ---
         { type: "Book Review", date: "2024-03-10", title: "Almanack of Naval Ravikant", rating: "Life Changing", content: "\"Most of modern life is a struggle between our biological evolution and our societal evolution.\" A manual for wealth and happiness that hits harder than a textbook." },
-        
-        // --- TECH ---
         { type: "Tech", date: "2025-01-01", title: "Portfolio_v2.0", content: "> System initializing...\n> Loading Next.js modules...\n> [ERROR]: Caffeine level low.\n> Coming Soon." },
 
         // --- LOCKED CONTENT ---
@@ -500,8 +517,9 @@
     const grid = document.getElementById('archive-grid');
     const safetyModal = document.getElementById('safety-modal');
     const contactModal = document.getElementById('contact-modal');
+    const passInput = document.getElementById('passcode-input');
 
-    // 1. Sort Function (Newest First)
+    // 1. Sort Function
     function sortData(data) {
         return data.sort((a, b) => {
             if (a.date === 'Unknown') return 1;
@@ -514,32 +532,56 @@
     function render(filterType) {
         grid.innerHTML = '';
         const sortedDB = sortData(db);
+        const vaultUnlocked = localStorage.getItem('vaultUnlocked') === 'true';
 
         sortedDB.forEach((item, index) => {
-            // Filter Logic
             if (filterType !== 'all' && item.type !== filterType) return;
-            // Hide Locked content from ALL view
             if (filterType === 'all' && item.type === 'Locked') return;
 
             const card = document.createElement('div');
-            
-            // Assign CSS Class
             let cssClass = 'card ';
-            if (item.type === 'Poetry') cssClass += 'style-poetry';
+            
+            // Handle Styling
+            if (item.type === 'Locked') {
+                if (vaultUnlocked) cssClass += 'style-unlocked';
+                else cssClass += 'style-locked';
+            } else if (item.type === 'Poetry') cssClass += 'style-poetry';
             else if (item.type === 'Book Review') cssClass += 'style-book';
             else if (item.type === 'Tech') cssClass += 'style-tech';
-            else if (item.type === 'Locked') cssClass += 'style-locked';
             else cssClass += 'style-paper';
             
             card.className = cssClass;
-            card.id = `card-${index}`; 
+            card.id = `card-${index}`;
 
-            // Content Formatting
+            // Content Logic
             let htmlContent = '';
-            const liked = localStorage.getItem(`liked-${index}`) === 'true' ? 'liked' : '';
-
-            // Layouts
-            if (item.type === 'Book Review') {
+            
+            // VAULT ITEM LOGIC
+            if (item.type === 'Locked') {
+                if (vaultUnlocked) {
+                    // UNLOCKED VIEW
+                    htmlContent = `
+                        <div class="meta">
+                            <span>UNLOCKED ARCHIVE</span>
+                            <span>${item.date}</span>
+                        </div>
+                        <h3>${item.title}</h3>
+                        <p style="white-space: pre-wrap;">${item.content}</p>
+                    `;
+                } else {
+                    // LOCKED VIEW
+                    htmlContent = `
+                        <div class="blur-content">${item.content.replace(/\n/g, '<br>')}</div>
+                        <div class="lock-overlay">
+                            <i class="fa-solid fa-lock fa-2x"></i>
+                            <h3 style="color: #fff; margin-top:10px;">${item.title}</h3>
+                            <button class="request-btn" onclick="showContactOptions()">REQUEST ACCESS</button>
+                        </div>
+                    `;
+                }
+            } 
+            // BOOK REVIEWS
+            else if (item.type === 'Book Review') {
                 htmlContent = `
                     <div class="book-header">LIBRARY ARCHIVE</div>
                     <div class="book-body">
@@ -549,17 +591,9 @@
                         <div class="meta">${item.date}</div>
                     </div>
                 `;
-            } else if (item.type === 'Locked') {
-                // RENDER FULL CONTENT BUT BLURRED
-                htmlContent = `
-                    <div class="blur-content">${item.content.replace(/\n/g, '<br>')}</div>
-                    <div class="lock-overlay">
-                        <i class="fa-solid fa-lock fa-2x"></i>
-                        <h3 style="color: #fff; margin-top:10px;">${item.title}</h3>
-                        <button class="request-btn" onclick="showContactOptions()">REQUEST ACCESS</button>
-                    </div>
-                `;
-            } else {
+            } 
+            // STANDARD ITEMS
+            else {
                 htmlContent = `
                     <div class="meta">
                         <span>${item.type}</span>
@@ -570,8 +604,9 @@
                 `;
             }
 
-            // Add Actions (Like & Share) to non-locked cards
-            if (item.type !== 'Locked' && item.type !== 'Tech') {
+            // Add Actions (Like/Share) - Only for unlocked or non-vault items
+            if (item.type !== 'Tech' && !(item.type === 'Locked' && !vaultUnlocked)) {
+                const liked = localStorage.getItem(`liked-${index}`) === 'true' ? 'liked' : '';
                 htmlContent += `
                     <div class="actions">
                         <button class="action-btn ${liked}" onclick="toggleLike(this, ${index})"><i class="fa-solid fa-heart"></i></button>
@@ -586,49 +621,57 @@
         });
     }
 
-    // 3. Filter Logic
     function filter(type) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        // Find button with specific onclick text to activate
         const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.includes(type.toUpperCase()));
         if(targetBtn) targetBtn.classList.add('active');
-        
         render(type);
     }
 
-    // 4. Trigger Vault Warning
     function triggerVaultCheck() {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector('.tab-btn.locked').classList.add('active');
-        
-        // Show Warning Modal
-        safetyModal.style.display = 'flex';
+        const isUnlocked = localStorage.getItem('vaultUnlocked') === 'true';
+        if (isUnlocked) {
+            filter('Locked');
+        } else {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.tab-btn.locked').classList.add('active');
+            safetyModal.style.display = 'flex';
+        }
     }
 
-    // 5. Enter Vault (After Confirmation)
     function enterVault() {
         safetyModal.style.display = 'none';
         render('Locked');
     }
 
-    // 6. Show Contact Options (For Locked Cards)
     function showContactOptions() {
         contactModal.style.display = 'flex';
     }
 
-    // 7. Close All Modals
     function closeAllModals() {
         safetyModal.style.display = 'none';
         contactModal.style.display = 'none';
     }
 
-    // 8. Random Memory Feature
+    // --- NEW: UNLOCK LOGIC ---
+    function unlockVault() {
+        const code = passInput.value;
+        // CHANGE THIS PASSCODE TO WHATEVER YOU WANT
+        if (code === "ARYAN-X") {
+            localStorage.setItem('vaultUnlocked', 'true');
+            alert("ACCESS GRANTED. WELCOME.");
+            closeAllModals();
+            render('Locked');
+        } else {
+            alert("ACCESS DENIED. INCORRECT CODE.");
+        }
+    }
+
     function showRandom() {
         const available = db.filter(item => item.type !== 'Locked' && item.type !== 'Tech');
         const randomItem = available[Math.floor(Math.random() * available.length)];
         
-        grid.innerHTML = ''; // Clear grid
-        // Render single card
+        grid.innerHTML = ''; 
         const card = document.createElement('div');
         let cssClass = 'card ';
         if (randomItem.type === 'Poetry') cssClass += 'style-poetry';
@@ -647,7 +690,6 @@
         grid.appendChild(card);
     }
 
-    // 9. Like Feature
     function toggleLike(btn, index) {
         if (btn.classList.contains('liked')) {
             btn.classList.remove('liked');
@@ -658,32 +700,28 @@
         }
     }
 
-    // 10. Share / Export as Image
     function shareCard(cardId) {
         const cardElement = document.getElementById(cardId);
         const watermark = cardElement.querySelector('.watermark');
         const actions = cardElement.querySelector('.actions');
 
-        // Show watermark, hide buttons for screenshot
         if(watermark) watermark.style.display = 'block';
         if(actions) actions.style.display = 'none';
 
         html2canvas(cardElement, {
             backgroundColor: null, 
-            scale: 2 // High Res
+            scale: 2 
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = `AryanArchives_Memory.png`;
             link.href = canvas.toDataURL();
             link.click();
 
-            // Reset UI
             if(watermark) watermark.style.display = 'none';
             if(actions) actions.style.display = 'flex';
         });
     }
 
-    // Initial Render
     render('all');
 
 </script>
